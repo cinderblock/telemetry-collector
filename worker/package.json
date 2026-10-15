@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "@simplewebauthn/server": "^14.0.2",
-    "@cinderblock/telemetry-collector-core": "workspace:*"
+    "telemetry-collector-core": "workspace:*"
   }
 }

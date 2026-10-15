@@ -1,5 +1,5 @@
 {
-  "name": "@cinderblock/telemetry-collector",
+  "name": "telemetry-collector",
   "version": "0.0.0",
   "description": "Report errors, messages and user feedback (with screenshots) to an telemetry-collector backend.",
   "type": "module",
@@ -31,7 +31,7 @@
     "prepublishOnly": "bun run ../../scripts/guard-publish.ts && bun run build"
   },
   "dependencies": {
-    "@cinderblock/telemetry-collector-core": "workspace:*"
+    "telemetry-collector-core": "workspace:*"
   },
   "repository": {
     "type": "git",

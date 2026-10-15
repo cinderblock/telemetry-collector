@@ -73,8 +73,8 @@ signing setup should be loud.
 ### Browser
 
 ```ts
-import { init } from '@cinderblock/telemetry-collector';
-import { installBrowserHandlers, captureScreenshot } from '@cinderblock/telemetry-collector/browser';
+import { init } from 'telemetry-collector';
+import { installBrowserHandlers, captureScreenshot } from 'telemetry-collector/browser';
 
 const client = init({
   endpoint: 'https://errors.example.com', // your deployment — there is no default
@@ -100,8 +100,8 @@ never use one. `captureScreenshot` takes a `renderer`, falls back to a global
 ### Node / server-side
 
 ```ts
-import { init } from '@cinderblock/telemetry-collector';
-import { installNodeHandlers } from '@cinderblock/telemetry-collector/node';
+import { init } from 'telemetry-collector';
+import { installNodeHandlers } from 'telemetry-collector/node';
 
 const client = init({
   endpoint: process.env.TELEMETRY_COLLECTOR_URL!,
@@ -304,8 +304,9 @@ anywhere in that tree would inherit the account.
 
 So the credential direction is reversed. **Cloudflare Workers Builds** connects to this
 repository through a GitHub App, pulls the code, builds it and deploys it. Nothing
-Cloudflare-shaped is stored here. The only secret this repo holds is `NPM_TOKEN`, for
-publishing the SDK packages — which is its actual job.
+Cloudflare-shaped is stored here. Nor is anything npm-shaped: the SDK packages publish
+through npm trusted publishing (OIDC from the `Publish` workflow), so this repo holds no
+secrets at all.
 
 Deploys come from a dedicated **`deploy` branch**, not from `master`. Landing work on
 `master` ships nothing; moving the branch is what ships:
@@ -360,8 +361,8 @@ across deploys.
 
 ```
 packages/core/   key derivation, grouping, event normalization  (shared)
-packages/sdk/    @cinderblock/telemetry-collector — the reporter
-packages/cli/    @cinderblock/telemetry-collector-cli
+packages/sdk/    telemetry-collector — the reporter
+packages/cli/    telemetry-collector-cli
 worker/          the Cloudflare Worker: ingest, API, admin, cron
 skills/          agent instructions for wiring this into a project
 plans/           design notes

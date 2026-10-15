@@ -1,5 +1,5 @@
 {
-  "name": "@cinderblock/telemetry-collector-core",
+  "name": "telemetry-collector-core",
   "version": "0.0.0",
   "description": "Shared key derivation, grouping and event normalization for telemetry-collector.",
   "type": "module",

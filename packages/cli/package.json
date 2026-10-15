@@ -1,5 +1,5 @@
 {
-  "name": "@cinderblock/telemetry-collector-cli",
+  "name": "telemetry-collector-cli",
   "version": "0.0.0",
   "description": "Derive ingest keys at build time and pull error datasets for triage.",
   "type": "module",
@@ -25,7 +25,7 @@
     "prepublishOnly": "bun run ../../scripts/guard-publish.ts && bun run build"
   },
   "dependencies": {
-    "@cinderblock/telemetry-collector-core": "workspace:*"
+    "telemetry-collector-core": "workspace:*"
   },
   "repository": {
     "type": "git",

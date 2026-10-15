@@ -139,7 +139,7 @@ In GitHub Actions:
 
 ```yaml
 - name: Derive ingest key
-  run: echo "VITE_TELEMETRY_COLLECTOR_KEY=$(bunx @cinderblock/telemetry-collector-cli key \
+  run: echo "VITE_TELEMETRY_COLLECTOR_KEY=$(bunx telemetry-collector-cli key \
     --app gate-manager --channel "${{ github.sha }}")" >> "$GITHUB_ENV"
   env:
     TELEMETRY_COLLECTOR_APP_SECRET: ${{ secrets.TELEMETRY_COLLECTOR_APP_SECRET }}
@@ -151,14 +151,14 @@ Use whatever env prefix the project's bundler actually inlines (`VITE_`, `NEXT_P
 ### 3. Install and initialise
 
 ```sh
-bun add @cinderblock/telemetry-collector
+bun add telemetry-collector
 ```
 
 Browser:
 
 ```ts
-import { init } from '@cinderblock/telemetry-collector';
-import { installBrowserHandlers } from '@cinderblock/telemetry-collector/browser';
+import { init } from 'telemetry-collector';
+import { installBrowserHandlers } from 'telemetry-collector/browser';
 
 const client = init({
   endpoint: import.meta.env.VITE_TELEMETRY_COLLECTOR_URL, // required — no default exists
@@ -204,7 +204,7 @@ not `user_id`).
 ### 5. Feedback, if the app has users
 
 ```ts
-import { captureScreenshot } from '@cinderblock/telemetry-collector/browser';
+import { captureScreenshot } from 'telemetry-collector/browser';
 
 await client.sendFeedback({
   message: text,
@@ -268,5 +268,5 @@ signs automatically when `TELEMETRY_COLLECTOR_APP_SECRET` is present.
 | Ingest      | `POST /i/<ingestKey>` — JSON, or multipart with a `report` field plus `screenshot`                                         |
 | Dataset     | `GET /api/digest`, `/api/issues`, `/api/issues/:id`, `/api/apps`, `/api/blob/:key`                                         |
 | Auth (read) | `Authorization: Bearer ert_…`                                                                                              |
-| CLI         | `bunx @cinderblock/telemetry-collector-cli help`                                                                           |
+| CLI         | `bunx telemetry-collector-cli help`                                                                                        |
 | Env         | `TELEMETRY_COLLECTOR_URL`, `TELEMETRY_COLLECTOR_TOKEN`, `TELEMETRY_COLLECTOR_APP_SECRET`, `TELEMETRY_COLLECTOR_INGEST_KEY` |

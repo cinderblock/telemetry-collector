@@ -434,7 +434,7 @@ was built, precisely so the name would not write a cheque the code had not cashe
 
 ## Deliverables beyond the backend
 
-1. **`@cinderblock/telemetry-collector` (npm, published by CI with provenance)** — browser
+1. **`telemetry-collector` (npm, published by CI with provenance)** — browser
    - Node reporter. `init({ ingestKey })`, global `onerror`/`unhandledrejection` hooks,
      breadcrumbs, `reportFeedback({ text, screenshot })`, offline queue.
 2. **Feedback widget** — a drop-in that captures a screenshot client-side
@@ -451,9 +451,12 @@ was built, precisely so the name would not write a cheque the code had not cashe
 All four opening questions were answered on 2026-09-21 and are recorded under
 "Decisions already locked". Remaining, to raise when the work reaches them:
 
-1. **npm scope for the published SDKs** — `@cinderblock/*` or something else? Needs
-   the org to exist on npm before the first publish workflow runs. (Placeholder-`0.0.0`
-   name claim is the one sanctioned local publish; everything real ships from CI.)
+1. ~~**npm scope for the published SDKs**~~ — **Decided 2026-10-15: unscoped.** The
+   user said to use the plain name if available, and `telemetry-collector`,
+   `telemetry-collector-core` and `telemetry-collector-cli` were all free (plus no
+   punctuation-variant collisions). Publishing uses npm trusted publishing (OIDC), like
+   XLN. Names are claimed with the sanctioned one-time local `0.0.0`, then trusted
+   publishers are configured on npmjs.com, then `v0.1.0` ships from CI.
 2. **ops change** — `cloudflare/config/workers/telemetry-collector.yaml` is now staged in
    ops (dry-run verified, purely additive) but **not committed or applied**. Applying
    it needs explicit per-change authorization.
@@ -528,6 +531,9 @@ Things that were not obvious going in, recorded so they are not re-derived:
 - [x] 2026-09-21 — README, agent skill, CI (check / deploy / publish).
 - [x] 2026-09-21 — Passkey auth and the admin UI. All five governor levels probed
       against real usage ratios. 133 tests, clean typecheck.
+- [x] 2026-10-15 — Renamed packages to unscoped `telemetry-collector`,
+      `telemetry-collector-core`, `telemetry-collector-cli`. Publish workflow switched
+      from `NPM_TOKEN` to trusted publishing. First consumer: OpenSlate usage analytics.
 - [x] 2026-09-21 — Renamed the npm scope to `@cinderblock`; pushed to
       `github.com/cinderblock/telemetry-collector` (public, default branch `master`).
 - [x] 2026-09-21 — Removed every hardcoded deployment hostname: the SDK and CLI now

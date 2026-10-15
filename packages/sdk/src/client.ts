@@ -19,7 +19,7 @@ import {
   type ReportPayload,
   type ReportUser,
   type UsageEvent,
-} from '@cinderblock/telemetry-collector-core';
+} from 'telemetry-collector-core';
 import { exceptionChain, parseStack } from './stack.js';
 
 export interface InitOptions {

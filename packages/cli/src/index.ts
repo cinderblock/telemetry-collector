@@ -20,7 +20,7 @@ import {
   isValidChannel,
   signReport,
   type ReportPayload,
-} from '@cinderblock/telemetry-collector-core';
+} from 'telemetry-collector-core';
 
 interface Flags {
   [key: string]: string | boolean;

@@ -8,7 +8,7 @@
 import { rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { generateReadToken, hashReadToken } from '@cinderblock/telemetry-collector-core';
+import { generateReadToken, hashReadToken } from 'telemetry-collector-core';
 
 const args = process.argv.slice(2);
 const write = args.includes('--write');

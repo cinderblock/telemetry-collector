@@ -4,7 +4,7 @@
  *   POST /u/<ingestKey>    { event, value?, dims? }  or  { events: [ … ] }
  *
  * **Writes one Analytics Engine data point per event and touches D1 not at all.**
- * That is the whole design. See `@cinderblock/telemetry-collector-core/usage` for
+ * That is the whole design. See `telemetry-collector-core/usage` for
  * why, and for the field layout.
  *
  * Two deliberate differences from the error path:
@@ -31,7 +31,7 @@ import {
   verifyIngestKey,
   verifyReportSignature,
   type NormalizedUsageEvent,
-} from '@cinderblock/telemetry-collector-core';
+} from 'telemetry-collector-core';
 import type { Env } from '../env.js';
 import { nowSeconds } from '../env.js';
 import { readGovernorState, type GovernorLevel } from '../governor.js';

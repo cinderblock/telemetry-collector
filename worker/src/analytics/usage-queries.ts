@@ -12,7 +12,7 @@
  * and `toDateTime` are supported.
  */
 
-import { USAGE_BLOBS, USAGE_DOUBLES, blobColumn, doubleColumn } from '@cinderblock/telemetry-collector-core';
+import { USAGE_BLOBS, USAGE_DOUBLES, blobColumn, doubleColumn } from 'telemetry-collector-core';
 import type { Env } from '../env.js';
 import { WEIGHTED_COUNT, ident, lit, runSql, weightedSum } from './sql.js';
 
