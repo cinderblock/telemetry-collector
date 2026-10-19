@@ -7,8 +7,16 @@ upload_source_maps = true
 # This file carries no hostname on purpose. The custom domain is declared wherever
 # this instance is deployed from (mine lives in a separate infrastructure repo), and
 # the WebAuthn relying party is derived from the request URL at runtime — so the same
-# committed config works on localhost, on a preview, and in production.
+# committed config works on localhost and in production.
 # Deploys happen in CI only.
+
+# Serve production from its custom domain and nowhere else. Left unset, wrangler turns
+# both of these on at every deploy: a public *.workers.dev hostname, and a preview URL
+# for every uploaded version. Each of those runs against the production database, and
+# each is a separate WebAuthn relying party. A self-hosted copy with no custom domain
+# sets workers_dev = true.
+workers_dev = false
+preview_urls = false
 
 [triggers]
 # Every minute: refresh the budget governor from Analytics Engine.

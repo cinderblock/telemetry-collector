@@ -348,6 +348,10 @@ Don't add `--yes` to the migrations step: wrangler has no such flag and fails wi
 "Unknown argument: yes". In a non-interactive build it skips the confirmation by itself
 and still captures a backup first.
 
+`worker/wrangler.toml` turns off the `*.workers.dev` hostname and per-version preview
+URLs, so production answers only on the custom domain you attach. Without a custom
+domain, set `workers_dev = true` there.
+
 Set the production branch to `deploy`. Rollback is Cloudflare's version history, or
 moving the branch back.
 
