@@ -334,15 +334,19 @@ into existence on first write.
 `worker/wrangler.toml` ships `"local"` placeholders so `wrangler dev` works untouched.
 Your pipeline supplies the real ids as **build environment variables** and runs:
 
-| Stage  | Command                                                                                                                       |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| Build  | `bun install --frozen-lockfile && bun run build && bun scripts/resolve-bindings.ts`                                           |
-| Deploy | `wrangler -c worker/wrangler.toml d1 migrations apply TELEMETRY_DB --remote --yes && wrangler -c worker/wrangler.toml deploy` |
+| Stage  | Command                                                                                                                 |
+| ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Build  | `bun install --frozen-lockfile && bun run build && bun scripts/resolve-bindings.ts`                                     |
+| Deploy | `wrangler -c worker/wrangler.toml d1 migrations apply TELEMETRY_DB --remote && wrangler -c worker/wrangler.toml deploy` |
 
 with `D1_DATABASE_ID` and `KV_NAMESPACE_ID` set. `resolve-bindings.ts` **fails** when
 either is missing or malformed rather than substituting nothing — a Worker bound to a
 database called `local` starts happily and only breaks once traffic arrives, which is
 the exact "green but broken" shape this project exists to catch elsewhere.
+
+Don't add `--yes` to the migrations step: wrangler has no such flag and fails with
+"Unknown argument: yes". In a non-interactive build it skips the confirmation by itself
+and still captures a backup first.
 
 Set the production branch to `deploy`. Rollback is Cloudflare's version history, or
 moving the branch back.
