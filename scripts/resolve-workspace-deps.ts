@@ -3,7 +3,7 @@
  *
  * `workspace:` is a Bun/pnpm/Yarn protocol. Bun's own publish resolves it, but npm
  * does not — and provenance attestation is an npm feature, so these packages are
- * published with `npm publish`. Without this step the SDK would ship declaring a
+ * staged with `npm stage publish`. Without this step the SDK would ship declaring a
  * dependency on the literal string `workspace:*`, which fails to install for
  * everyone.
  *

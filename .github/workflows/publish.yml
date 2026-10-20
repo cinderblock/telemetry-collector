@@ -4,6 +4,12 @@ name: Publish
 # prepublishOnly in every package and hard-fails outside CI, so a local `npm publish`
 # is impossible rather than merely discouraged — the single exception being a one-time
 # 0.0.0 to claim a package name, which a registry can only ever accept once.
+#
+# Even from here a release cannot go live on its own. This workflow *stages* each
+# package; a maintainer then approves it on npmjs.com (Staged Packages tab) or with
+# `npm stage approve <stage-id>`, which demands 2FA. The trusted publisher on each
+# package allows stage publishing only, so a compromised workflow or token can at
+# worst submit a version for review. Approve core before sdk and cli: they depend on it.
 
 on:
   push:
@@ -41,8 +47,8 @@ jobs:
           node-version: '24'
           registry-url: https://registry.npmjs.org
 
-      # Trusted publishing needs npm >= 11.5.1.
-      - name: Ensure npm supports trusted publishing
+      # Trusted publishing needs npm >= 11.5.1, staged publishing >= 11.15.0.
+      - name: Ensure npm supports trusted and staged publishing
         run: |
           npm install -g npm@latest
           npm --version
@@ -79,11 +85,11 @@ jobs:
           done
           echo "all packages at $tag"
 
-      - name: Publish
+      - name: Stage for approval
         run: |
           # core first: the other two depend on it, and a published package whose
           # dependency does not yet exist is broken for anyone who installs it in
-          # the window between.
+          # the window between. Approve them in the same order.
           for pkg in packages/core packages/sdk packages/cli; do
             if [ "${{ inputs.dry_run }}" = "true" ]; then
               echo "--- dry run: $pkg ---"
@@ -91,6 +97,6 @@ jobs:
             else
               # No NODE_AUTH_TOKEN: npm detects the OIDC token from id-token above.
               # Provenance is generated automatically under trusted publishing.
-              (cd "$pkg" && npm publish --access public)
+              (cd "$pkg" && npm stage publish --access public)
             fi
           done

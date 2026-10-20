@@ -306,7 +306,9 @@ So the credential direction is reversed. **Cloudflare Workers Builds** connects 
 repository through a GitHub App, pulls the code, builds it and deploys it. Nothing
 Cloudflare-shaped is stored here. Nor is anything npm-shaped: the SDK packages publish
 through npm trusted publishing (OIDC from the `Publish` workflow), so this repo holds no
-secrets at all.
+secrets at all. That workflow can only _stage_ a release: each version goes live when a
+maintainer approves it on npmjs.com with 2FA, so not even a compromised workflow can ship
+a package on its own.
 
 Deploys come from a dedicated **`deploy` branch**, not from `master`. Landing work on
 `master` ships nothing; moving the branch is what ships:
