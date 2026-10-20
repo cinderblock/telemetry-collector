@@ -15,7 +15,7 @@
     },
     "packages/cli": {
       "name": "telemetry-collector-cli",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "bin": {
         "telemetry-collector": "./dist/index.js",
       },
@@ -25,11 +25,11 @@
     },
     "packages/core": {
       "name": "telemetry-collector-core",
-      "version": "0.0.0",
+      "version": "0.1.0",
     },
     "packages/sdk": {
       "name": "telemetry-collector",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "dependencies": {
         "telemetry-collector-core": "workspace:*",
       },

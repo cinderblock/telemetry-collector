@@ -1,6 +1,6 @@
 {
   "name": "telemetry-collector",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Report errors, messages and user feedback (with screenshots) to an telemetry-collector backend.",
   "type": "module",
   "license": "MIT",

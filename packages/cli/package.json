@@ -1,6 +1,6 @@
 {
   "name": "telemetry-collector-cli",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Derive ingest keys at build time and pull error datasets for triage.",
   "type": "module",
   "license": "MIT",

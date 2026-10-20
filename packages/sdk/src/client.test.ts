@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'bun:test';
 import { MAX_EVENTS_PER_REQUEST } from 'telemetry-collector-core';
-import { Client, init } from './client.js';
+import { Client, init, SDK_VERSION } from './client.js';
 
 const KEY = 'ek1.gate-manager.1.4.2.cc5g1c36bb3je8d7vmatrb59fm';
 const ENDPOINT = 'https://errors.example.com';
@@ -237,5 +237,14 @@ describe('retirement (410)', () => {
     // Un-retiring a channel should bring clients back without them clearing anything.
     respondWith(410);
     expect(new Client({ endpoint: ENDPOINT, ingestKey: KEY }).isRetired).toBe(false);
+  });
+});
+
+describe('SDK_VERSION', () => {
+  it('matches the published package version', async () => {
+    // Every payload reports this, and the collector groups by it. It is a literal rather
+    // than read from package.json at runtime, so this is what keeps the two in step.
+    const pkg = await Bun.file(new URL('../package.json', import.meta.url)).json();
+    expect(SDK_VERSION).toBe(pkg.version);
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "telemetry-collector-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared key derivation, grouping and event normalization for telemetry-collector.",
   "type": "module",
   "license": "MIT",
