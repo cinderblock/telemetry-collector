@@ -52,7 +52,7 @@ function notConfigured(message: string): string {
     be there once this is configured. Only <em>reading</em> them needs an account token, because
     Analytics Engine is written through a binding but queried over the HTTP API.</p>
     <pre>wrangler secret put CF_ANALYTICS_TOKEN   # needs Account Analytics: Read
-# and set CF_ACCOUNT_ID in wrangler.toml [vars]</pre>
+# and set CF_ACCOUNT_ID as a build variable (scripts/resolve-bindings.ts)</pre>
   </div>`;
 }
 

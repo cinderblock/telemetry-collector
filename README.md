@@ -161,7 +161,7 @@ Consequences worth knowing before you rely on the numbers:
 - **AE keeps 90 days**, so a daily cron rolls per-(app, event, day) totals into D1.
   That cannot be backfilled, which is why it ships with the feature.
 
-Reading usage needs an account API token (`CF_ANALYTICS_TOKEN` + `CF_ACCOUNT_ID`),
+Reading usage needs an account API token (`CF_ANALYTICS_TOKEN`, with `CF_ACCOUNT_ID`),
 because AE is _written_ through a binding but _queried_ over HTTPS. Writing works
 without one; the admin UI says so rather than erroring.
 
@@ -341,8 +341,9 @@ Your pipeline supplies the real ids as **build environment variables** and runs:
 | Build  | `bun install --frozen-lockfile && bun run build && bun scripts/resolve-bindings.ts`                                     |
 | Deploy | `wrangler -c worker/wrangler.toml d1 migrations apply TELEMETRY_DB --remote && wrangler -c worker/wrangler.toml deploy` |
 
-with `D1_DATABASE_ID` and `KV_NAMESPACE_ID` set. `resolve-bindings.ts` **fails** when
-either is missing or malformed rather than substituting nothing — a Worker bound to a
+with `D1_DATABASE_ID` and `KV_NAMESPACE_ID` set, and optionally `CF_ACCOUNT_ID` (see
+below). `resolve-bindings.ts` **fails** when either id is missing or malformed rather
+than substituting nothing — a Worker bound to a
 database called `local` starts happily and only breaks once traffic arrives, which is
 the exact "green but broken" shape this project exists to catch elsewhere.
 
@@ -362,10 +363,13 @@ branch — every other branch uses the preview command, so neither a `master` pu
 preview build can migrate your production database.
 
 Worker secrets are set on the Worker, not here: `SECRET_KEK` and `BOOTSTRAP_TOKEN`, plus
-`CF_ACCOUNT_ID` / `CF_ANALYTICS_TOKEN` once anything sends usage events. That last pair is
-not just for the charts: the daily rollup that preserves usage past Analytics Engine's
-90-day retention needs them, and a day it misses cannot be backfilled. They persist
-across deploys.
+`CF_ANALYTICS_TOKEN` (an account API token with Account Analytics: Read) once anything
+sends usage events. Secrets persist across deploys. Its partner `CF_ACCOUNT_ID` is a
+**build variable**, which `resolve-bindings.ts` writes into `[vars]`. It isn't secret, and
+a plain-text variable set in the dashboard would not last: `wrangler deploy` replaces
+those with the file's `[vars]`. The pair is not just for the charts: the daily rollup
+that preserves usage past Analytics Engine's 90-day retention needs them, and a day it
+misses cannot be backfilled.
 
 ## Repository layout
 

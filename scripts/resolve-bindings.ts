@@ -1,5 +1,6 @@
 /**
- * Substitute the real Cloudflare resource ids into `worker/wrangler.toml`.
+ * Substitute the real Cloudflare resource ids, and the account id, into
+ * `worker/wrangler.toml`.
  *
  * The committed file carries `"local"` placeholders so that `wrangler dev` works with
  * no setup at all. The real ids are **deployment configuration, not source** — this
@@ -8,8 +9,15 @@
  * and are never committed.
  *
  * For my deployment they are supplied by Cloudflare Workers Builds, as build
- * environment variables set on the build trigger, which the ops repo owns. Anyone
- * self-hosting sets the same two variables however their pipeline prefers.
+ * environment variables set on the build trigger. Anyone self-hosting sets the same
+ * variables however their pipeline prefers.
+ *
+ * `CF_ACCOUNT_ID` lands in `[vars]`, because a plain-text variable added in the
+ * dashboard does not survive: `wrangler deploy` replaces every plain-text variable with
+ * the file's `[vars]` (secrets are kept). It is not a secret — it names the account
+ * whose Analytics Engine the usage charts and the daily usage rollup read — so a secret
+ * would only hide it. It is optional: without it the build warns, collection still
+ * works, and the admin UI says reading usage is not set up.
  *
  * This **fails** when a value is missing or malformed. It does not warn and carry on:
  * a Worker deployed with `database_id = "local"` binds to nothing, starts happily and
@@ -44,6 +52,8 @@ function read(name: keyof typeof EXPECTED): string {
   return value;
 }
 
+const ACCOUNT_ID = /^[0-9a-f]{32}$/;
+
 const problems: string[] = [];
 const values: Partial<Record<keyof typeof EXPECTED, string>> = {};
 
@@ -57,6 +67,11 @@ for (const name of Object.keys(EXPECTED) as (keyof typeof EXPECTED)[]) {
   }
 }
 
+const accountId = (process.env.CF_ACCOUNT_ID ?? '').trim();
+if (accountId && !ACCOUNT_ID.test(accountId)) {
+  problems.push(`CF_ACCOUNT_ID does not look like an account id (32 hex digits): ${JSON.stringify(accountId)}`);
+}
+
 if (problems.length > 0) {
   for (const problem of problems) console.error(`error: ${problem}`);
   console.error(`\n${problems.length} problem(s). See "Deployment" in README.md.`);
@@ -67,6 +82,19 @@ const original = await Bun.file(TOML).text();
 
 let updated = original.replace(/^database_id = "local"$/m, `database_id = "${values.D1_DATABASE_ID}"`);
 updated = updated.replace(/^id = "local"$/m, `id = "${values.KV_NAMESPACE_ID}"`);
+
+if (accountId) {
+  if (/^CF_ACCOUNT_ID\s*=/m.test(updated)) {
+    console.error('error: worker/wrangler.toml already sets CF_ACCOUNT_ID; it is deployment configuration');
+    process.exit(1);
+  }
+  const withAccount = updated.replace(/^\[vars\]\r?$/m, `$&\nCF_ACCOUNT_ID = "${accountId}"`);
+  if (withAccount === updated) {
+    console.error('error: no [vars] table in worker/wrangler.toml to put CF_ACCOUNT_ID in');
+    process.exit(1);
+  }
+  updated = withAccount;
+}
 
 // A placeholder that survived means the file moved on and this script did not — the
 // substitution silently missing is exactly the failure worth being loud about.
@@ -88,3 +116,9 @@ await Bun.write(TOML, updated);
 // and makes a mis-set variable obvious in the build log.
 console.log(`d1 database_id = ${values.D1_DATABASE_ID}`);
 console.log(`kv id          = ${values.KV_NAMESPACE_ID}`);
+if (accountId) {
+  console.log(`account id     = ${accountId}`);
+} else {
+  console.warn('warning: CF_ACCOUNT_ID is not set, so the usage charts and the daily usage rollup');
+  console.warn('         cannot read Analytics Engine. Set it as a build variable to enable them.');
+}
